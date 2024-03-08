@@ -1,19 +1,46 @@
-name: CI
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 
-on: [push]
+# Initialize the WebDriver
+driver = webdriver.Chrome()
 
-jobs:
-  build:
+# Navigate to the webpage
+driver.get("file:///C:/Users/HP/Desktop/manaf/csvca1/index.html")
 
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v1
-    - name: Run a one-line script
-      run: echo Hello, world!
-    - name: Run a multi-line script
-      run: |
-        echo Add other actions to build
+time.sleep(2)
 
+name_input = driver.find_element("name","name")
+name_input.send_keys("abdul manaf")
+time.sleep(2)
 
-        end
+address_textarea = driver.find_element("name","address")
+address_textarea.send_keys("23,colony delhi 14367")
+time.sleep(2)
+
+subscribe_checkbox = driver.find_element("name","subscribe")
+subscribe_checkbox.click()
+time.sleep(2)
+
+gender_radio = driver.find_element("name","gender")
+gender_radio.click()
+time.sleep(2)
+
+country_dropdown = driver.find_element("id", "country")
+country_dropdown.send_keys("india")
+time.sleep(2)
+
+# Submit the form
+submit_button = driver.find_element("xpath","//button[@type='submit']")
+submit_button.click()
+# myForm > div:nth-child(6) > button
+# Wait for confirmation message
+time.sleep(2)  # Adjust as needed
+
+# Check for confirmation message (assuming an alert is displayed upon form submission)
+alert = driver.switch_to.alert
+print("Form submitted successfully! Alert message: ", alert.text)
