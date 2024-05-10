@@ -1,0 +1,41 @@
+name: Selenium Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      # Install dependencies, run tests using Selenium, and store the result in a variable
+      - name: Run Selenium Tests
+        id: selenium
+        run: |
+          # Install dependencies (e.g., Selenium, pytest)
+          pip install selenium pytest
+          # Run Selenium tests and capture the result
+          pytest tests/ || echo "Tests failed" && exit 1
+
+      # Send email notification if tests fail
+      - name: Send Email Notification
+        if: ${{ failure() }}
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          RECIPIENT_EMAIL: your_email@example.com
+        run: |
+          python send_email.py --to $RECIPIENT_EMAIL --subject "Test Failure Notification" --body "One or more tests failed in the Selenium project."
+
